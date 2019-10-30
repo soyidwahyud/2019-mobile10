@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ public class VisitorFragment extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		sharedScore = ViewModelProviders.of(requireActivity()).get(SharedScore.class);
 	}
 
 	@Override
@@ -47,12 +50,40 @@ public class VisitorFragment extends Fragment {
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		sharedScore = ViewModelProviders.of(requireActivity()).get(SharedScore.class);
 		scoreDuaVisitor = view.findViewById(R.id.scoreDuaVisitor);
 		scoreTigaVisitor = view.findViewById(R.id.scoreTigaVisitor);
 		scoreVisitor = view.findViewById(R.id.scoreVisitor);
 		scoreSatuVisitor = view.findViewById(R.id.scoreSatuVisitor);
 
-
+		sharedScore.getScoreVisitor().observe(requireActivity(), new Observer<Integer>() {
+			@Override
+			public void onChanged(Integer score) {
+				scoreVisitor.setText(String.valueOf(score));
+				scoreDefault = score;
+			}
+		});
 		// Tambahkan logic tombol di bagian bawah ini
+
+		scoreDuaVisitor.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				sharedScore.setScoreVisitor(scoreDefault+2);
+			}
+		});
+
+		scoreTigaVisitor.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				sharedScore.setScoreVisitor(scoreDefault+3);
+			}
+		});
+
+		scoreSatuVisitor.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				sharedScore.setScoreVisitor(scoreDefault+1);
+			}
+		});
 	}
 }
